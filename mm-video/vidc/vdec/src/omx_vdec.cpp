@@ -7158,7 +7158,7 @@ OMX_ERRORTYPE omx_vdec::fill_buffer_done(OMX_HANDLETYPE hComp,
   }
 
  // update buffer stride so display can interpret the buffer correctly
- if (m_use_smoothstreaming) {
+ if (m_use_smoothstreaming && !output_flush_progress) {
     OMX_U32 buf_index = buffer - m_out_mem_ptr;
     private_handle_t * handle = NULL;
     BufferDim_t dim;
@@ -10154,9 +10154,10 @@ bool omx_vdec::allocate_color_convert_buf::update_buffer_req()
     return false;
   }
   c2d.close();
+
   status = c2d.open(omx->drv_ctx.video_resolution.frame_height,
                     omx->drv_ctx.video_resolution.frame_width,
-                    YCbCr420Tile,YCbCr420P);
+                    YCbCr420Tile,YCbCr420P, 0);
   if (status) {
     status = c2d.get_buffer_size(C2D_INPUT,src_size);
     if (status)
